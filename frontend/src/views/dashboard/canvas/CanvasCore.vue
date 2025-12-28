@@ -202,8 +202,7 @@ function addItemToPositionBox(item: CanvasItem) {
     for (let j = item.y - 1; j < item.y - 1 + item.sizeY; j++) {
       if (pb[j] && pb[j][i]) {
         // Ensure the target location is valid & Place the item in the corresponding position
-        // @ts-expect-error eslint-disable-next-line @typescript-eslint/ban-ts-comment
-        pb[j][i].el = item
+        pb[j][i].el = item as any
       }
     }
   }
@@ -438,8 +437,7 @@ function getNextDragId() {
   if (validIds.length === 0) {
     return 0
   }
-  // @ts-expect-error eslint-disable-next-line @typescript-eslint/ban-ts-comment
-  const maxDragId = Math.max(...validIds)
+  const maxDragId = Math.max(...(validIds as any[]))
   return maxDragId + 1
 }
 
@@ -1028,16 +1026,13 @@ function nowItemStyle(item: CanvasItem) {
 
 function getList() {
   let returnList = _.sortBy(_.cloneDeep(canvasComponentData.value), 'y')
-  // @ts-expect-error eslint-disable-next-line @typescript-eslint/ban-ts-comment
-  let finalList = []
-  _.forEach(returnList, function (item) {
+  let finalList = [] as any[]
+  _.forEach(returnList, function (item: any) {
     if (_.isEmpty(item)) return
-    // @ts-expect-error eslint-disable-next-line @typescript-eslint/ban-ts-comment
     delete item['_dragId']
     delete item['show']
     finalList.push(item)
   })
-  // @ts-expect-error eslint-disable-next-line @typescript-eslint/ban-ts-comment
   return finalList
 }
 

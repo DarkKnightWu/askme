@@ -25,7 +25,7 @@ export const snapshotStore = defineStore('snapshot', {
       styleChangeTimes: -1, // Component style modification count
       cacheStyleChangeTimes: 0, // Unsaved component style modification count in the dashboard
       snapshotCacheTimes: 0, // Current unsnapshot modification count (timed cache, cached every 5 seconds; used for minor changes like style adjustments)
-      snapshotData: [], // Editor snapshot data
+      snapshotData: [] as any[], // Editor snapshot data
       snapshotIndex: -1, // Snapshot index
     }
   },
@@ -53,13 +53,9 @@ export const snapshotStore = defineStore('snapshot', {
         this.snapshotIndex--
         const componentSnapshot =
           _.cloneDeep(this.snapshotData[this.snapshotIndex]) || getDefaultCanvasInfo()
-        // @ts-expect-error eslint-disable-next-line @typescript-eslint/ban-ts-comment
         componentSnapshot.dashboardInfo.id = dashboardInfo.value.id
-        // @ts-expect-error eslint-disable-next-line @typescript-eslint/ban-ts-comment
         componentSnapshot.dashboardInfo.pid = dashboardInfo.value.pid
-        // @ts-expect-error eslint-disable-next-line @typescript-eslint/ban-ts-comment
         componentSnapshot.dashboardInfo.dataState = dashboardInfo.value.dataState
-        // @ts-expect-error eslint-disable-next-line @typescript-eslint/ban-ts-comment
         componentSnapshot.dashboardInfo.contentId = dashboardInfo.value.contentId
         this.snapshotPublish(componentSnapshot)
         this.styleChangeTimes++
@@ -72,13 +68,9 @@ export const snapshotStore = defineStore('snapshot', {
       if (this.snapshotIndex < this.snapshotData.length - 1) {
         this.snapshotIndex++
         const snapshotInfo = _.cloneDeep(this.snapshotData[this.snapshotIndex])
-        // @ts-expect-error eslint-disable-next-line @typescript-eslint/ban-ts-comment
         snapshotInfo.dashboardInfo.id = dashboardInfo.value.id
-        // @ts-expect-error eslint-disable-next-line @typescript-eslint/ban-ts-comment
         snapshotInfo.dashboardInfo.pid = dashboardInfo.value.pid
-        // @ts-expect-error eslint-disable-next-line @typescript-eslint/ban-ts-comment
         snapshotInfo.dashboardInfo.dataState = dashboardInfo.value.dataState
-        // @ts-expect-error eslint-disable-next-line @typescript-eslint/ban-ts-comment
         snapshotInfo.dashboardInfo.contentId = dashboardInfo.value.contentId
         this.snapshotPublish(snapshotInfo)
         this.styleChangeTimes++
@@ -110,7 +102,6 @@ export const snapshotStore = defineStore('snapshot', {
       if (dataPrepareState.value) {
         this.styleChangeTimes = ++this.styleChangeTimes
         // Add a new snapshot
-        // @ts-expect-error eslint-disable-next-line @typescript-eslint/ban-ts-comment
         this.snapshotData[++this.snapshotIndex] = {
           componentData: _.cloneDeep(componentData.value),
           canvasStyleData: _.cloneDeep(canvasStyleData.value),

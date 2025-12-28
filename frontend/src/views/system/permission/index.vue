@@ -65,7 +65,7 @@ const ruleListWithSearch = computed(() => {
 })
 const tableColumnData = computed<any[]>(() => {
   if (!searchColumn.value) return columnForm.permissions
-  return columnForm.permissions.filter((ele) =>
+  return columnForm.permissions.filter((ele: any) =>
     ele.field_name.toLowerCase().includes(searchColumn.value.toLowerCase())
   )
 })
@@ -268,7 +268,7 @@ const handleEditeTable = (val: any) => {
     .then((res: any) => {
       fieldListOptions.value = res || []
       if (columnForm.type === 'row') return
-      const enableMap = columnForm.permissions.reduce((pre, next) => {
+      const enableMap = columnForm.permissions.reduce((pre: any, next: any) => {
         pre[next.field_id] = next.enable
         return pre
       }, {})
