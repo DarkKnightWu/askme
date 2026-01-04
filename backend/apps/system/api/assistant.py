@@ -108,6 +108,7 @@ async def picture(file_id: str = Path(description="file_id")):
 
 
 @router.patch('/ui', summary=f"{PLACEHOLDER_PREFIX}assistant_ui_api", description=f"{PLACEHOLDER_PREFIX}assistant_ui_api")
+@system_log(LogConfig(operation_type=OperationType.UPDATE, module=OperationModules.APPLICATION, result_id_expr="id"))
 async def ui(session: SessionDep, data: str = Form(), files: List[UploadFile] = []):
     json_data = json.loads(data)
     uiSchema = AssistantUiSchema(**json_data)
@@ -125,8 +126,15 @@ async def ui(session: SessionDep, data: str = Form(), files: List[UploadFile] = 
             file_name, flag_name = SQLBotFileUtils.split_filename_and_flag(origin_file_name)
             file.filename = file_name
             if flag_name == 'logo' or flag_name == 'float_icon':
-                SQLBotFileUtils.check_file(file=file, file_types=[".jpg", ".jpeg", ".png", ".svg"],
-                                           limit_file_size=(10 * 1024 * 1024))
+                try:
+                    SQLBotFileUtils.check_file(file=file, file_types=[".jpg", ".png", ".svg"],
+                                               limit_file_size=(10 * 1024 * 1024))
+                except ValueError as e:
+                    error_msg = str(e)
+                    if '文件大小超过限制' in error_msg:
+                        raise ValueError(f"文件大小超过限制（最大 10 M）")
+                    else:
+                        raise e
                 if config_obj.get(flag_name):
                     SQLBotFileUtils.delete_file(config_obj.get(flag_name))
                 file_id = await SQLBotFileUtils.upload(file)
@@ -148,6 +156,7 @@ async def ui(session: SessionDep, data: str = Form(), files: List[UploadFile] = 
     session.add(db_model)
     session.commit()
     await clear_ui_cache(db_model.id)
+    return db_model
 
 
 @clear_cache(namespace=CacheNamespace.EMBEDDED_INFO, cacheName=CacheName.ASSISTANT_INFO, keyExpression="id")

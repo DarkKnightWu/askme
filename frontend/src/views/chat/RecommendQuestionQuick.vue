@@ -26,7 +26,7 @@ const emits = defineEmits(['clickQuestion', 'stop', 'loadingOver'])
 
 const loading = ref(false)
 
-const questions = ref('[]')
+const questions = ref<string | undefined>('[]')
 
 const computedQuestions = computed<string>(() => {
   if (
@@ -53,7 +53,7 @@ async function getRecommendQuestions(articles_number: number) {
     if (res.recommended_config === 2) {
       questions.value = res.questions
     } else if (currentChat.value.recommended_generate) {
-      questions.value = currentChat.value.recommended_question
+      questions.value = currentChat.value.recommended_question as string
     } else {
       getRecommendQuestionsLLM(articles_number)
     }
@@ -148,7 +148,7 @@ onBeforeUnmount(() => {
   stop()
 })
 
-defineExpose({ getRecommendQuestions, id: () => props.recordId, stop })
+defineExpose({ getRecommendQuestions, id: () => props.recordId, stop, getRecommendQuestionsLLM })
 </script>
 
 <template>

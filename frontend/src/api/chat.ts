@@ -189,7 +189,9 @@ export class ChatInfo extends Chat {
     ds_type: string,
     datasource_name: string,
     datasource_exists: boolean,
-    records: Array<ChatRecord>
+    records: Array<ChatRecord>,
+    recommended_question?: string | undefined,
+    recommended_generate?: boolean | undefined
   )
   constructor(
     param1?: number | Chat,
@@ -354,8 +356,8 @@ export const chatApi = {
     return request.get(`/chat/recent_questions/${datasource_id}`)
   },
   checkLLMModel: () => request.get('/system/aimodel/default', { requestOptions: { silent: true } }),
-  export2Excel: (record_id: number | undefined) =>
-    request.get(`/chat/record/${record_id}/excel/export`, {
+  export2Excel: (record_id: number | undefined, chat_id: any) =>
+    request.get(`/chat/record/${record_id}/excel/export/${chat_id}`, {
       responseType: 'blob',
       requestOptions: { customError: true },
     }),
